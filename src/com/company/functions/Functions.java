@@ -31,4 +31,6 @@ public class Functions {
     public static Function composition(Function f1, Function f2) {
         return new Composition(f1,f2);
     }
+
+
 }

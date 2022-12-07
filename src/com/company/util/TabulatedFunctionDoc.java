@@ -1,6 +1,7 @@
 package com.company.util;
 
 import com.company.functions.*;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -8,6 +9,8 @@ import org.json.simple.parser.ParseException;
 import sun.plugin2.main.client.WMozillaServiceDelegate;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class TabulatedFunctionDoc implements TabulatedFunction, Serializable {
 
@@ -35,7 +38,7 @@ public class TabulatedFunctionDoc implements TabulatedFunction, Serializable {
     }
 
     public void tabulateFunction(Function function, double leftX, double rightX, int pointsCount) {
-        func = TabulatedFunctions.tabulate(func, leftX, rightX, pointsCount);
+        func = TabulatedFunctions.tabulate(FunctionType.ARRAY,func, leftX, rightX, pointsCount);
         modified = true;
     }
 
@@ -176,6 +179,17 @@ public class TabulatedFunctionDoc implements TabulatedFunction, Serializable {
     }
 
     @Override
+    public double calculateIntegral(double a, double b, double step) {
+        if (a>this.getRightDomainBorder() || b<this.getLeftDomainBorder() || a<b) throw new IllegalArgumentException();
+        double rezult = 0;
+        while(a<b) {
+            rezult += (this.getFunctionValue(a) + this.getFunctionValue(a+step))*step/2;
+            a+=step;
+        }
+        return rezult;
+    }
+
+    @Override
     public int getPointsCount() {
         return func.getPointsCount();
     }
@@ -233,5 +247,11 @@ public class TabulatedFunctionDoc implements TabulatedFunction, Serializable {
     @Override
     public void print() {
         func.print();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<FunctionPoint> iterator() {
+        return func.iterator();
     }
 }

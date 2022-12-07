@@ -1,6 +1,10 @@
 package com.company.functions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import static java.lang.Double.NaN;
 
@@ -273,6 +277,17 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
     }
 
     @Override
+    public double calculateIntegral(double a, double b, double step) {
+        if (a>this.getRightDomainBorder() || b<this.getLeftDomainBorder() || a<b) throw new IllegalArgumentException();
+        double rezult = 0;
+        while(a>b) {
+            rezult += (this.getFunctionValue(b) + this.getFunctionValue(b+step))*step/2;
+            b+=step;
+        }
+        return rezult;
+    }
+
+    @Override
     public int hashCode() {
         int result = size;
         for (int i=0;i<size; ++i) {
@@ -290,5 +305,25 @@ public class LinkedListTabulatedFunction implements TabulatedFunction, Serializa
             throw new RuntimeException(e);
         }
     }
+
+    @NotNull
+    @Override
+    public Iterator<FunctionPoint> iterator() {
+        Iterator<FunctionPoint> it = new Iterator<FunctionPoint>() {
+            FunctionNode cur = head.next;
+            @Override
+            public boolean hasNext() {
+                return cur.next!=null;
+            }
+
+            @Override
+            public FunctionPoint next() {
+                cur = cur.next;
+                return cur.point;
+            }
+        };
+        return it;
+    }
+
 
 }

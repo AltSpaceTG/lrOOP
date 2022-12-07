@@ -1,10 +1,14 @@
 package com.company.functions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import static java.lang.Double.NaN;
 
-public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
+public class ArrayTabulatedFunction implements TabulatedFunction, Serializable{
 
     FunctionPoint[] array = new FunctionPoint[0];
     int size = 0;
@@ -57,6 +61,17 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
             }
         }
         return NaN;
+    }
+
+    @Override
+    public double calculateIntegral(double a, double b, double step) {
+        if (a>this.getRightDomainBorder() || b<this.getLeftDomainBorder() || a<b) throw new IllegalArgumentException();
+        double rezult = 0;
+        while(a>b) {
+            rezult += (this.getFunctionValue(b) + this.getFunctionValue(b+step))*step/2;
+            b+=step;
+        }
+        return rezult;
     }
 
     public int getPointsCount() {
@@ -192,5 +207,11 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @NotNull
+    @Override
+    public Iterator<FunctionPoint> iterator() {
+        return Arrays.stream(array).iterator();
     }
 }

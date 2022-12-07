@@ -2,7 +2,7 @@ package com.company.functions;
 
 import static java.lang.Double.NaN;
 
-public interface TabulatedFunction extends Function {
+public interface TabulatedFunction extends Function, Iterable<FunctionPoint>{
 
 
     int getPointsCount();
